@@ -1,5 +1,5 @@
 import numpy as np
-
+import math
 
 class Agent:
     '''Agent Base.'''
@@ -8,12 +8,22 @@ class Agent:
         self.game = game
         self.display = display
 
-    def play(self, max_iter=np.inf, verbose=False):
+    def play(self, max_iter=np.inf, verbose=False,save=False,savedir='data/2048.txt'):
         n_iter = 0
         while (n_iter < max_iter) and (not self.game.end):
+            lastboard=self.game.board
             direction = self.step()
             self.game.move(direction)
             n_iter += 1
+            if save:
+                with open (savedir,'a',encoding='utf-8') as f:
+                    for i in lastboard.flatten():
+                        if i>0:
+                            f.write(str(int(math.log2(int(i))))+' ')
+                        else: 
+                            f.write('0 ')
+                    f.write(str(direction)+'\n')
+
             if verbose:
                 print("Iter: {}".format(n_iter))
                 print("======Direction: {}======".format(
